@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Хёмзиципа — детективная игра</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- ГЛАВНОЕ МЕНЮ -->
+        <div id="mainMenu" class="game-container main-menu">
+            <h1>🕯️ ХЁМЗИЦИПА</h1>
+            <div class="sub">детективная игра</div>
+            
+            <div class="menu-buttons">
+                <button id="newGameBtn" class="menu-btn">🔍 НАЧАТЬ ИГРУ</button>
+                <button id="continueBtn" class="menu-btn" style="display: none;">📖 ПРОДОЛЖИТЬ</button>
+                <button id="charactersBtn" class="menu-btn">👥 ПЕРСОНАЖИ</button>
+                <button id="settingsBtn" class="menu-btn">🎵 МУЗЫКА</button>
+            </div>
+            
+            <div class="menu-footer">
+                <p>каждый выбор меняет историю</p>
+            </div>
+        </div>
+        
+        <!-- СПИСОК ПЕРСОНАЖЕЙ -->
+        <div id="charactersListPanel" class="game-container characters-panel" style="display: none;">
+            <div class="panel-header">
+                <button id="backToMenuFromChars" class="back-btn">← НАЗАД</button>
+                <h2>ПЕРСОНАЖИ</h2>
+            </div>
+            <div id="charactersList" class="characters-list"></div>
+        </div>
+        
+        <!-- ДЕТАЛЬНАЯ КАРТОЧКА ПЕРСОНАЖА -->
+        <div id="characterDetailPanel" class="game-container character-detail-panel" style="display: none;">
+            <div class="panel-header">
+                <button id="backToMenuFromDetail" class="back-btn">← К СПИСКУ</button>
+                <h2>О ПЕРСОНАЖЕ</h2>
+            </div>
+            <div id="characterDetail" class="character-detail"></div>
+        </div>
+        
+        <!-- ИГРОВОЙ ИНТЕРФЕЙС -->
+        <div id="gameInterface" style="display: none;">
+            <div class="game-container">
+                <div class="game-header">
+                    <button id="menuFromGame" class="icon-btn">🏠</button>
+                    <h1>🕯️ ХЁМЗИЦИПА</h1>
+                    <button id="saveGameBtn" class="icon-btn">💾</button>
+                </div>
+                
+                <div class="stats" id="stats">
+                    <div class="stat">📋 ПРОФЕССИОНАЛИЗМ <span id="profValue">0</span></div>
+                    <div class="stat">❤️ ЛИЧНЫЕ ЧУВСТВА <span id="feelValue">0</span></div>
+                    <div class="stat">🤝 ДОВЕРИЕ <span id="trustValue">0</span></div>
+                </div>
+                
+                <div class="story-text" id="storyText">
+                    Загрузка...
+                </div>
+                
+                <div class="choices" id="choicesList"></div>
+                
+                <div class="game-footer">
+                    <button id="resetFromGameBtn" class="reset-btn">🔄 Новая игра</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- АУДИОПЛЕЕР -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="assets/music/ambient.mp3" type="audio/mpeg">
+    </audio>
+    <div id="musicControl" class="music-control" style="display: none;">
+        <button id="toggleMusicBtn">🔇</button>
+    </div>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
