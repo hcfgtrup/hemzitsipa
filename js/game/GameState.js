@@ -8,6 +8,7 @@ export class GameState {
         this.unlockedCharacters = [];
         this.flags = {};
         this.gameOver = false;
+        this.playerName = localStorage.getItem('playerName') || 'ДЕТЕКТИВ';
     }
     
     updateStats(changes) {
@@ -37,7 +38,8 @@ export class GameState {
             cipherAttempts: this.cipherAttempts,
             unlockedCharacters: this.unlockedCharacters,
             flags: this.flags,
-            gameOver: this.gameOver
+            gameOver: this.gameOver,
+            playerName: this.playerName
         };
     }
     
@@ -50,5 +52,6 @@ export class GameState {
         this.unlockedCharacters = data.unlockedCharacters || [];
         this.flags = data.flags || {};
         this.gameOver = data.gameOver || false;
+        this.playerName = data.playerName || localStorage.getItem('playerName') || 'ДЕТЕКТИВ';
     }
 }

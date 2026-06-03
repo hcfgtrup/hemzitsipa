@@ -10,6 +10,9 @@ class HemzitsipaGame {
         this.music = document.getElementById('bgMusic');
         this.musicPlaying = false;
         this.unlockedCharacters = [];
+        this.playerName = localStorage.getItem('playerName') || 'ДЕТЕКТИВ';
+        this.fontSize = localStorage.getItem('fontSize') || 14;
+        this.currentTheme = localStorage.getItem('theme') || 'bw';
         this.init();
     }
     
@@ -20,8 +23,42 @@ class HemzitsipaGame {
             this.bindEvents();
         }
         this.initMusic();
+        this.initFontSize();
+        this.initTheme();
         this.checkForSave();
         this.showMainMenu();
+    }
+    
+    initFontSize() {
+        document.documentElement.style.setProperty('--font-size', this.fontSize + 'px');
+    }
+    
+    setFontSize(size) {
+        this.fontSize = size;
+        localStorage.setItem('fontSize', size);
+        document.documentElement.style.setProperty('--font-size', size + 'px');
+    }
+    
+    initTheme() {
+        if (this.currentTheme === 'color') {
+            document.body.classList.add('color-theme');
+            document.body.classList.remove('bw-theme');
+        } else {
+            document.body.classList.add('bw-theme');
+            document.body.classList.remove('color-theme');
+        }
+    }
+    
+    setTheme(theme) {
+        this.currentTheme = theme;
+        localStorage.setItem('theme', theme);
+        if (theme === 'color') {
+            document.body.classList.add('color-theme');
+            document.body.classList.remove('bw-theme');
+        } else {
+            document.body.classList.add('bw-theme');
+            document.body.classList.remove('color-theme');
+        }
     }
     
     bindEvents() {
@@ -59,23 +96,89 @@ class HemzitsipaGame {
         modal.className = 'modal';
         modal.innerHTML = `
             <div class="modal-content">
-                <h3>⚙️ НАСТРОЙКИ</h3>
-                <button id="modalToggleMusicBtn" class="menu-btn">${this.music.paused ? '🔇 ВКЛЮЧИТЬ МУЗЫКУ' : '🔊 ВЫКЛЮЧИТЬ МУЗЫКУ'}</button>
-                <button id="closeSettingsBtn" class="close-modal">✖ ЗАКРЫТЬ</button>
+                <h3>НАСТРОЙКИ</h3>
+                
+                <div class="settings-group">
+                    <label>СМЕНИТЬ ИМЯ</label>
+                    <button id="changeNameBtn">${this.playerName}</button>
+                </div>
+                
+                <div class="settings-group">
+                    <label>ТЕМА</label>
+                    <div class="theme-buttons">
+                        <button id="bwThemeBtn" class="theme-btn ${this.currentTheme === 'bw' ? 'active' : ''}">ЧЁРНО-БЕЛАЯ</button>
+                        <button id="colorThemeBtn" class="theme-btn ${this.currentTheme === 'color' ? 'active' : ''}">ЦВЕТНАЯ</button>
+                    </div>
+                </div>
+                
+                <div class="settings-group">
+                    <label>РАЗМЕР ШРИФТА: ${this.fontSize}</label>
+                    <input type="range" id="fontSizeSlider" min="12" max="24" value="${this.fontSize}" step="1">
+                </div>
+                
+                <div class="settings-group">
+                    <label>ЗВУК</label>
+                    <button id="modalToggleMusicBtn">${this.music.paused ? 'ВКЛЮЧИТЬ МУЗЫКУ' : 'ВЫКЛЮЧИТЬ МУЗЫКУ'}</button>
+                </div>
+                
+                <div class="font-size-preview" id="fontPreview">
+                    Пример текста: Игра продолжается
+                </div>
+                
+                <button id="closeSettingsBtn" class="close-modal">ЗАКРЫТЬ</button>
             </div>
         `;
         
         document.body.appendChild(modal);
         
+        const changeNameBtn = document.getElementById('changeNameBtn');
+        const fontSizeSlider = document.getElementById('fontSizeSlider');
+        const fontPreview = document.getElementById('fontPreview');
         const modalToggleMusicBtn = document.getElementById('modalToggleMusicBtn');
-        if (modalToggleMusicBtn) {
-            modalToggleMusicBtn.onclick = () => {
-                this.toggleMusic();
-                modalToggleMusicBtn.innerText = this.music.paused ? '🔇 ВКЛЮЧИТЬ МУЗЫКУ' : '🔊 ВЫКЛЮЧИТЬ МУЗЫКУ';
+        const bwThemeBtn = document.getElementById('bwThemeBtn');
+        const colorThemeBtn = document.getElementById('colorThemeBtn');
+        const closeBtn = document.getElementById('closeSettingsBtn');
+        
+        if (changeNameBtn) {
+            changeNameBtn.onclick = () => {
+                modal.remove();
+                this.showNameInput(true);
             };
         }
         
-        const closeBtn = document.getElementById('closeSettingsBtn');
+        if (bwThemeBtn) {
+            bwThemeBtn.onclick = () => {
+                this.setTheme('bw');
+                bwThemeBtn.classList.add('active');
+                colorThemeBtn.classList.remove('active');
+            };
+        }
+        
+        if (colorThemeBtn) {
+            colorThemeBtn.onclick = () => {
+                this.setTheme('color');
+                colorThemeBtn.classList.add('active');
+                bwThemeBtn.classList.remove('active');
+            };
+        }
+        
+        if (fontSizeSlider) {
+            fontSizeSlider.oninput = (e) => {
+                const size = e.target.value;
+                const label = fontSizeSlider.parentElement.querySelector('label');
+                if (label) label.innerHTML = `РАЗМЕР ШРИФТА: ${size}`;
+                if (fontPreview) fontPreview.style.fontSize = size + 'px';
+                this.setFontSize(parseInt(size));
+            };
+        }
+        
+        if (modalToggleMusicBtn) {
+            modalToggleMusicBtn.onclick = () => {
+                this.toggleMusic();
+                modalToggleMusicBtn.innerText = this.music.paused ? 'ВКЛЮЧИТЬ МУЗЫКУ' : 'ВЫКЛЮЧИТЬ МУЗЫКУ';
+            };
+        }
+        
         if (closeBtn) closeBtn.onclick = () => modal.remove();
         
         modal.onclick = (e) => {
@@ -83,10 +186,50 @@ class HemzitsipaGame {
         };
     }
     
+    showNameInput(isFromSettings = false) {
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <h3>ВВЕДИТЕ ИМЯ</h3>
+                <input type="text" id="playerNameInput" maxlength="20" placeholder="ИМЯ ПЕРСОНАЖА" value="${this.playerName}">
+                <button id="confirmNameBtn">ПРИНЯТЬ</button>
+                <button id="closeNameBtn" class="close-modal">ОТМЕНА</button>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        const input = document.getElementById('playerNameInput');
+        const confirmBtn = document.getElementById('confirmNameBtn');
+        const closeBtn = document.getElementById('closeNameBtn');
+        
+        confirmBtn.onclick = () => {
+            const newName = input.value.trim().toUpperCase();
+            if (newName) {
+                this.playerName = newName;
+                localStorage.setItem('playerName', newName);
+                this.gameState.playerName = newName;
+            }
+            modal.remove();
+            if (isFromSettings) {
+                this.showSettingsModal();
+            }
+        };
+        
+        closeBtn.onclick = () => {
+            modal.remove();
+            if (isFromSettings) {
+                this.showSettingsModal();
+            }
+        };
+    }
+    
     initMusic() {
         const savedMuted = localStorage.getItem('music_muted');
         if (savedMuted === 'true') {
             this.musicPlaying = false;
+            this.music.pause();
         } else {
             this.music.volume = 0.3;
             this.music.play().catch(() => {
@@ -110,6 +253,7 @@ class HemzitsipaGame {
     
     startNewGame() {
         this.gameState = new GameState();
+        this.gameState.playerName = this.playerName;
         this.unlockedCharacters = [];
         for (const [id, char] of Object.entries(CharactersData)) {
             if (char.isUnlockedByDefault) {
@@ -117,6 +261,7 @@ class HemzitsipaGame {
             }
         }
         SaveService.deleteSave();
+        this.showNameInput();
         this.showGameInterface();
         this.render();
     }
@@ -217,9 +362,9 @@ class HemzitsipaGame {
             if (char.avatar && isUnlocked) {
                 avatarHtml = `<img src="${char.avatar}" class="character-list-avatar" alt="${char.name}" onerror="this.style.display='none'; this.nextSibling.style.display='flex'">`;
             } else if (isUnlocked) {
-                avatarHtml = `<div class="character-list-avatar-placeholder">👤</div>`;
+                avatarHtml = `<div class="character-list-avatar-placeholder">?</div>`;
             } else {
-                avatarHtml = `<div class="character-list-avatar-placeholder">❓</div>`;
+                avatarHtml = `<div class="character-list-avatar-placeholder">?</div>`;
             }
             
             card.innerHTML = `
@@ -227,7 +372,7 @@ class HemzitsipaGame {
                     ${avatarHtml}
                     <div class="character-list-info">
                         <div class="character-list-name">${isUnlocked ? char.name : '???'}</div>
-                        <div class="character-list-desc">${isUnlocked ? char.shortDesc : 'Персонаж ещё не разблокирован'}</div>
+                        <div class="character-list-desc">${isUnlocked ? char.shortDesc : 'ПЕРСОНАЖ ЗАКРЫТ'}</div>
                     </div>
                 </div>
             `;
@@ -236,7 +381,7 @@ class HemzitsipaGame {
                 card.onclick = () => this.showCharacterDetail(id, char);
                 card.style.cursor = 'pointer';
             } else {
-                card.style.opacity = '0.5';
+                card.style.opacity = '0.4';
             }
             
             container.appendChild(card);
@@ -252,10 +397,10 @@ class HemzitsipaGame {
         if (!isUnlocked) {
             container.innerHTML = `
                 <div class="character-detail-locked">
-                    <div class="character-detail-avatar">❓</div>
+                    <div class="character-detail-avatar">?</div>
                     <div class="character-detail-name">???</div>
                     <div class="character-detail-desc">Персонаж ещё не разблокирован</div>
-                    <div class="character-detail-fact">Продолжайте расследование, чтобы узнать больше</div>
+                    <div class="character-detail-fact">Продолжайте расследование</div>
                 </div>
             `;
             return;
@@ -264,26 +409,13 @@ class HemzitsipaGame {
         container.innerHTML = `
             <div class="character-detail-unlocked">
                 <img src="${characterData.avatar}" class="character-detail-avatar-img" alt="${characterData.name}" onerror="this.style.display='none'; this.nextSibling.style.display='flex'">
-                <div style="display: none; width:300px; height:450px; background:#1e293b; border-radius:12px; align-items:center; justify-content:center; font-size:40px; margin-bottom:20px;">${this.getAvatarEmoji(characterId)}</div>
+                <div style="display: none; width:300px; height:450px; background:var(--button-bg); border-radius:2px; align-items:center; justify-content:center; font-size:40px; margin-bottom:20px;">?</div>
                 <div class="character-detail-name">${characterData.name}</div>
                 <div class="character-detail-desc">${characterData.fullDesc}</div>
-                <div class="character-detail-fact-title">📌 Факт</div>
+                <div class="character-detail-fact-title">ФАКТ</div>
                 <div class="character-detail-fact">${characterData.fact}</div>
             </div>
         `;
-    }
-    
-    getAvatarEmoji(characterId) {
-        const emojis = {
-            detective: '🕵️',
-            intern: '👨‍💼',
-            brother: '👤',
-            sister: '👧',
-            villain: '❓',
-            lawyer: '⚖️',
-            wife: '👩'
-        };
-        return emojis[characterId] || '👤';
     }
     
     saveUnlockedToState() {
@@ -304,13 +436,15 @@ class HemzitsipaGame {
         notification.style.position = 'fixed';
         notification.style.bottom = '20px';
         notification.style.left = '20px';
-        notification.style.backgroundColor = '#d4af37';
-        notification.style.color = '#0a0c12';
+        notification.style.backgroundColor = 'var(--bg-container)';
+        notification.style.color = 'var(--text-light)';
         notification.style.padding = '10px 20px';
-        notification.style.borderRadius = '8px';
-        notification.style.fontWeight = 'bold';
+        notification.style.borderRadius = '2px';
+        notification.style.fontWeight = 'normal';
         notification.style.zIndex = '3000';
-        notification.innerText = `🔓 Разблокирован: ${characterName}`;
+        notification.style.border = '1px solid var(--border)';
+        notification.style.fontFamily = 'Courier New, monospace';
+        notification.innerText = `РАЗБЛОКИРОВАН: ${characterName}`;
         document.body.appendChild(notification);
         setTimeout(() => notification.remove(), 3000);
     }
@@ -349,9 +483,9 @@ class HemzitsipaGame {
                 const container = document.createElement('div');
                 container.className = 'input-area';
                 const input = document.createElement('input');
-                input.placeholder = choice.placeholder || 'Введите ответ...';
+                input.placeholder = choice.placeholder || 'ВВЕДИТЕ ОТВЕТ...';
                 const btn = document.createElement('button');
-                btn.innerText = '🔍 Ответить';
+                btn.innerText = 'ОТВЕТИТЬ';
                 btn.onclick = () => {
                     const val = input.value.trim();
                     if (val) this.makeChoice(choice.id, val);
@@ -396,7 +530,7 @@ class HemzitsipaGame {
     }
     
     resetGame() {
-        if (confirm('Начать игру заново? Весь прогресс будет потерян.')) {
+        if (confirm('НАЧАТЬ ИГРУ ЗАНОВО? ВЕСЬ ПРОГРЕСС БУДЕТ ПОТЕРЯН.')) {
             this.gameState = new GameState();
             this.unlockedCharacters = [];
             for (const [id, char] of Object.entries(CharactersData)) {
@@ -412,7 +546,7 @@ class HemzitsipaGame {
     saveGame() {
         this.saveUnlockedToState();
         SaveService.save(this.gameState);
-        alert('Игра сохранена!');
+        alert('ИГРА СОХРАНЕНА');
     }
     
     toggleMusic() {
@@ -421,13 +555,13 @@ class HemzitsipaGame {
             this.musicPlaying = true;
             localStorage.setItem('music_muted', 'false');
             const toggleBtn = document.getElementById('toggleMusicBtn');
-            if (toggleBtn) toggleBtn.innerText = '🔊';
+            if (toggleBtn) toggleBtn.innerText = 'M';
         } else {
             this.music.pause();
             this.musicPlaying = false;
             localStorage.setItem('music_muted', 'true');
             const toggleBtn = document.getElementById('toggleMusicBtn');
-            if (toggleBtn) toggleBtn.innerText = '🔇';
+            if (toggleBtn) toggleBtn.innerText = 'M';
         }
     }
 }
