@@ -36,7 +36,7 @@ export const CharactersData = {
         shortDesc: 'Погибла 12 лет назад',
         fullDesc: 'Погибла в аварии 12 лет назад. Водитель был пьян, но адвокат оправдал его. Её смерть — отправная точка всей истории.',
         fact: 'Её смерть изменила всех: детектива, брата, даже убийцу.',
-        unlockScene: 'office',
+        unlockScene: 'office_story',
         isUnlockedByDefault: false
     },
     villain: {
@@ -56,7 +56,7 @@ export const CharactersData = {
         shortDesc: 'Пропавший адвокат',
         fullDesc: 'Известный адвокат, один из лучших в своём деле. Оправдал пьяного водителя 12 лет назад.',
         fact: 'Возможно, он не жертва, а часть игры.',
-        unlockScene: 'wife_interview',
+        unlockScene: 'wife_continue',
         isUnlockedByDefault: false
     },
     wife: {

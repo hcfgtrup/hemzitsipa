@@ -4,24 +4,24 @@
     box-sizing: border-box;
 }
 
-/* ===== ТЕМА 1: ЧЁРНО-БЕЛАЯ (bw) ===== */
+/* ===== ТЕМА 1: ЧЁРНО-БЕЛАЯ (bw) - БОЛЕЕ ТЁМНАЯ ===== */
 body.bw-theme {
-    --bg-body: #0a0c10;
-    --bg-container: #0d0f14;
-    --bg-story: #0a0c10;
-    --text-main: #b8b8b8;
-    --text-light: #d4d4d4;
-    --text-dim: #808080;
-    --border: #2a2e3a;
-    --border-light: #4a4e5a;
-    --button-bg: #0f1117;
-    --button-hover: #1a1d26;
-    --story-border: #4a4e5a;
-    --filter-location: grayscale(100%) brightness(0.65) contrast(1.2);
-    --filter-char: grayscale(100%) brightness(0.75) contrast(1.2);
+    --bg-body: #050608;
+    --bg-container: #0a0c10;
+    --bg-story: #07090d;
+    --text-main: #a0a0a0;
+    --text-light: #c0c0c0;
+    --text-dim: #6a6a6a;
+    --border: #1a1c22;
+    --border-light: #2a2e3a;
+    --button-bg: #0d0f14;
+    --button-hover: #15181f;
+    --story-border: #2a2e3a;
+    --filter-location: grayscale(100%) brightness(0.55) contrast(1.3);
+    --filter-char: grayscale(100%) brightness(0.65) contrast(1.3);
 }
 
-/* ===== ТЕМА 2: ЦВЕТНАЯ (как в Пандемии) ===== */
+/* ===== ТЕМА 2: ЦВЕТНАЯ ===== */
 body.color-theme {
     --bg-body: #0a111a;
     --bg-container: #0e1622;
@@ -38,19 +38,17 @@ body.color-theme {
     --filter-char: grayscale(0%) brightness(0.9) contrast(1.05) saturate(0.85);
 }
 
-/* По умолчанию чёрно-белая */
 body {
     background: var(--bg-body);
     font-family: 'Courier New', 'Segoe UI', monospace;
     color: var(--text-main);
-    padding: 20px;
     min-height: 100vh;
     display: flex;
     justify-content: center;
     transition: background 0.3s ease;
 }
 
-/* ФОН МЕНЮ (НА ВСЁ ОКНО) */
+/* ФОН МЕНЮ */
 .menu-bg {
     position: fixed;
     top: 0;
@@ -74,26 +72,30 @@ body.color-theme .menu-bg {
     max-width: 750px;
     width: 100%;
     background: var(--bg-container);
-    border-radius: 4px;
-    padding: 28px;
+    padding: 16px 20px;
     border: 1px solid var(--border);
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
     position: relative;
     z-index: 1;
 }
 
-h1 {
+/* ===== ГЛАВНОЕ МЕНЮ ===== */
+.main-menu {
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-top: 40px;
+}
+
+h1 {
     font-size: 26px;
     letter-spacing: 6px;
-    margin-bottom: 5px;
     color: var(--text-light);
     font-weight: 400;
     text-transform: uppercase;
 }
 
 .sub {
-    text-align: center;
     font-size: 10px;
     opacity: 0.5;
     margin-bottom: 28px;
@@ -101,143 +103,6 @@ h1 {
     padding-bottom: 12px;
     letter-spacing: 2px;
     color: var(--text-dim);
-}
-
-/* СТАТЫ */
-.stats {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 28px;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.stat {
-    background: var(--bg-story);
-    padding: 6px 18px;
-    border-radius: 2px;
-    font-size: 10px;
-    font-weight: 400;
-    border: 1px solid var(--border);
-    letter-spacing: 1px;
-    color: var(--text-dim);
-    text-transform: uppercase;
-}
-
-.stat span {
-    color: var(--text-light);
-    font-size: 14px;
-    margin-left: 8px;
-    font-weight: 400;
-}
-
-/* ТЕКСТ ИСТОРИИ */
-.story-text {
-    background: var(--bg-story);
-    padding: 24px;
-    border-radius: 4px;
-    line-height: 1.7;
-    font-size: var(--font-size, 14px);
-    margin-bottom: 28px;
-    border-left: 3px solid var(--story-border);
-    height: auto;
-    max-height: 500px;
-    overflow-y: auto;
-    white-space: pre-wrap;
-    font-family: 'Courier New', monospace;
-    color: var(--text-main);
-}
-
-.story-text::-webkit-scrollbar {
-    width: 4px;
-}
-
-.story-text::-webkit-scrollbar-track {
-    background: var(--bg-story);
-}
-
-.story-text::-webkit-scrollbar-thumb {
-    background: var(--border);
-}
-
-/* КНОПКИ ВЫБОРА */
-.choices {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-button, .choice-btn {
-    background: var(--button-bg);
-    border: 1px solid var(--border);
-    color: var(--text-main);
-    padding: 12px 20px;
-    border-radius: 2px;
-    font-family: 'Courier New', monospace;
-    font-size: 13px;
-    font-weight: 400;
-    text-align: left;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-}
-
-button:hover, .choice-btn:hover {
-    background: var(--button-hover);
-    border-color: var(--border-light);
-    color: var(--text-light);
-}
-
-/* ПОЛЕ ВВОДА */
-.input-area {
-    display: flex;
-    gap: 12px;
-    margin-top: 8px;
-}
-
-.input-area input {
-    flex: 1;
-    background: var(--bg-story);
-    border: 1px solid var(--border);
-    padding: 12px 18px;
-    border-radius: 2px;
-    color: var(--text-main);
-    font-family: monospace;
-    font-size: 13px;
-}
-
-.input-area input:focus {
-    outline: none;
-    border-color: var(--border-light);
-}
-
-.game-footer {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    margin-top: 10px;
-}
-
-.reset-btn {
-    background: var(--bg-story);
-    text-align: center;
-    flex: 1;
-    font-size: 11px;
-    border-color: var(--border);
-}
-
-.reset-btn:hover {
-    background: var(--button-hover);
-}
-
-/* ===== МЕНЮ ===== */
-.main-menu {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
 }
 
 .menu-buttons {
@@ -253,13 +118,17 @@ button:hover, .choice-btn:hover {
     padding: 14px;
     background: var(--button-bg);
     border: 1px solid var(--border);
+    color: var(--text-main);
     letter-spacing: 2px;
     text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
 .menu-btn:hover {
     background: var(--button-hover);
     border-color: var(--border-light);
+    color: var(--text-light);
 }
 
 .menu-footer {
@@ -268,6 +137,214 @@ button:hover, .choice-btn:hover {
     font-size: 10px;
     letter-spacing: 1px;
     color: var(--text-dim);
+}
+
+/* ===== ВЕРХНЯЯ ПАНЕЛЬ (три точки - ПРАВЫЙ ВЕРХНИЙ УГОЛ) ===== */
+.game-header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.dot-menu-btn {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-size: 24px;
+    padding: 0 8px;
+    cursor: pointer;
+    font-weight: 400;
+    letter-spacing: 2px;
+}
+
+.dot-menu-btn:hover {
+    color: var(--text-light);
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: var(--bg-container);
+    min-width: 160px;
+    border: 1px solid var(--border);
+    z-index: 100;
+    top: 30px;
+    right: 0;
+}
+
+.dropdown-content button {
+    color: var(--text-main);
+    background: none;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    border: none;
+    width: 100%;
+    text-align: left;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+}
+
+.dropdown-content button:hover {
+    background-color: var(--button-hover);
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* ПРОГРЕСС-БАР */
+.progress-container {
+    flex: 1;
+    height: 2px;
+    background-color: var(--border);
+    margin-left: 15px;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background-color: var(--text-dim);
+    transition: width 0.3s ease;
+}
+
+/* ===== ИМЯ ПЕРСОНАЖА ===== */
+.player-name {
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+}
+
+.player-name span {
+    color: var(--text-light);
+    font-weight: bold;
+}
+
+/* ===== СТАТЫ ===== */
+.stats {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+.stat {
+    background: none;
+    border: none;
+    font-size: 10px;
+    color: var(--text-dim);
+    padding: 0;
+    text-transform: uppercase;
+}
+
+.stat span {
+    color: var(--text-light);
+    font-size: 12px;
+}
+
+/* ===== ТЕКСТ ИСТОРИИ ===== */
+.story-text {
+    background: none;
+    padding: 0 0 24px 0;
+    border-left: none;
+    font-size: var(--font-size, 15px);
+    margin-bottom: 24px;
+    max-height: 60vh;
+    overflow-y: auto;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    font-family: 'Courier New', monospace;
+    color: var(--text-main);
+}
+
+.story-text::-webkit-scrollbar {
+    width: 3px;
+}
+
+.story-text::-webkit-scrollbar-track {
+    background: var(--bg-body);
+}
+
+.story-text::-webkit-scrollbar-thumb {
+    background: var(--border);
+}
+
+/* ===== КНОПКИ ВЫБОРА ===== */
+.choices {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.choice-btn {
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    padding: 12px 0;
+    font-size: 13px;
+    text-transform: none;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    text-align: left;
+    color: var(--text-main);
+    font-family: 'Courier New', monospace;
+    transition: all 0.2s ease;
+}
+
+.choice-btn:hover {
+    border-bottom-color: var(--text-dim);
+    padding-left: 8px;
+    color: var(--text-light);
+}
+
+/* ===== ПОЛЕ ВВОДА ===== */
+.input-area {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.input-area input {
+    flex: 1;
+    background: var(--bg-story);
+    border: 1px solid var(--border);
+    padding: 12px 18px;
+    color: var(--text-main);
+    font-family: monospace;
+    font-size: 13px;
+}
+
+.input-area input:focus {
+    outline: none;
+    border-color: var(--border-light);
+}
+
+.input-area button {
+    background: none;
+    border: 1px solid var(--border);
+    padding: 12px 18px;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+    font-size: 12px;
+    color: var(--text-main);
+}
+
+.input-area button:hover {
+    background: var(--button-hover);
 }
 
 /* ===== ПАНЕЛЬ ПЕРСОНАЖЕЙ ===== */
@@ -293,10 +370,13 @@ button:hover, .choice-btn:hover {
 }
 
 .back-btn {
-    background: var(--bg-story);
+    background: transparent;
     padding: 8px 20px;
-    font-size: 11px;
-    width: auto;
+    font-size: 12px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    color: var(--text-main);
+    font-family: 'Courier New', monospace;
 }
 
 .back-btn:hover {
@@ -313,16 +393,15 @@ button:hover, .choice-btn:hover {
 }
 
 .character-list-card {
-    background: var(--bg-story);
-    border-radius: 2px;
+    background: transparent;
     padding: 12px 16px;
-    border: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
     transition: all 0.15s;
+    cursor: pointer;
 }
 
 .character-list-card.unlocked:hover {
-    background: var(--button-hover);
-    border-color: var(--border-light);
+    background: var(--bg-story);
 }
 
 .character-list-card.locked {
@@ -338,7 +417,6 @@ button:hover, .choice-btn:hover {
 .character-list-avatar {
     width: 50px;
     height: 50px;
-    border-radius: 2px;
     object-fit: cover;
     filter: var(--filter-char);
 }
@@ -346,7 +424,6 @@ button:hover, .choice-btn:hover {
 .character-list-avatar-placeholder {
     width: 50px;
     height: 50px;
-    border-radius: 2px;
     background: var(--button-bg);
     display: flex;
     align-items: center;
@@ -386,7 +463,6 @@ button:hover, .choice-btn:hover {
 .character-detail-avatar-img {
     width: 300px;
     height: 450px;
-    border-radius: 2px;
     object-fit: cover;
     margin-bottom: 20px;
     border: 1px solid var(--border);
@@ -427,7 +503,6 @@ button:hover, .choice-btn:hover {
     text-align: left;
     padding: 12px;
     background: var(--bg-story);
-    border-radius: 2px;
     border-left: 2px solid var(--border);
 }
 
@@ -440,7 +515,6 @@ button:hover, .choice-btn:hover {
     width: 100px;
     height: 100px;
     background: var(--button-bg);
-    border-radius: 2px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -449,70 +523,13 @@ button:hover, .choice-btn:hover {
     color: var(--border);
 }
 
-/* ===== ИГРОВОЙ ХЕДЕР ===== */
-.game-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--border);
-}
-
-.icon-btn {
-    background: var(--bg-story);
-    padding: 8px 16px;
-    font-size: 11px;
-    width: auto;
-    text-transform: uppercase;
-}
-
-.icon-btn:hover {
-    background: var(--button-hover);
-}
-
-/* ===== МУЗЫКА ===== */
-.music-control {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 1000;
-}
-
-.music-control button {
-    background: var(--bg-container);
-    border-radius: 2px;
-    width: 45px;
-    height: 45px;
-    padding: 0;
-    text-align: center;
-    font-size: 14px;
-    border: 1px solid var(--border);
-    color: var(--text-main);
-}
-
 /* ===== КАРТИНКИ ЛОКАЦИЙ ===== */
 .location-image {
     width: 100%;
     max-height: 300px;
     object-fit: cover;
-    border-radius: 2px;
     margin-bottom: 15px;
-    border: 1px solid var(--border);
     filter: var(--filter-location);
-}
-
-/* ===== СКРОЛЛ ===== */
-.characters-list::-webkit-scrollbar {
-    width: 4px;
-}
-
-.characters-list::-webkit-scrollbar-track {
-    background: var(--bg-story);
-}
-
-.characters-list::-webkit-scrollbar-thumb {
-    background: var(--border);
 }
 
 /* ===== МОДАЛЬНОЕ ОКНО ===== */
@@ -522,7 +539,7 @@ button:hover, .choice-btn:hover {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(10, 15, 26, 0.95);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -535,7 +552,6 @@ body.color-theme .modal {
 
 .modal-content {
     background: var(--bg-container);
-    border-radius: 4px;
     padding: 30px;
     min-width: 280px;
     max-width: 400px;
@@ -559,7 +575,7 @@ body.color-theme .modal {
     background: var(--bg-story);
     border: 1px solid var(--border);
     color: var(--text-main);
-    font-family: 'Courier New', monospace;
+    font-family: monospace;
     font-size: 14px;
     text-align: center;
     margin-bottom: 20px;
@@ -568,11 +584,21 @@ body.color-theme .modal {
 .modal-content button {
     margin: 10px 0;
     width: 100%;
-    text-align: center;
+    padding: 10px;
+    background: none;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+    font-size: 12px;
+    color: var(--text-main);
+}
+
+.modal-content button:hover {
+    background: var(--button-hover);
 }
 
 .close-modal {
-    background: var(--bg-story);
     margin-top: 10px;
 }
 
@@ -591,22 +617,6 @@ body.color-theme .modal {
     text-transform: uppercase;
 }
 
-.settings-group select,
-.settings-group input[type="range"] {
-    width: 100%;
-}
-
-.font-size-preview {
-    margin-top: 15px;
-    padding: 10px;
-    background: var(--bg-story);
-    border: 1px solid var(--border);
-    font-family: 'Courier New', monospace;
-    font-size: 14px;
-    text-align: center;
-}
-
-/* ТЕМА */
 .theme-buttons {
     display: flex;
     gap: 10px;
@@ -626,14 +636,20 @@ body.color-theme .modal {
     color: var(--text-light);
 }
 
+.font-size-preview {
+    margin-top: 15px;
+    padding: 10px;
+    background: var(--bg-story);
+    border: 1px solid var(--border);
+    font-family: monospace;
+    font-size: 14px;
+    text-align: center;
+}
+
 /* ===== АДАПТАЦИЯ ===== */
 @media (max-width: 550px) {
     .game-container {
-        padding: 16px;
-    }
-    
-    .character-list-item {
-        gap: 10px;
+        padding: 12px 16px;
     }
     
     .character-list-avatar {
@@ -641,23 +657,9 @@ body.color-theme .modal {
         height: 40px;
     }
     
-    .character-list-avatar-placeholder {
-        width: 40px;
-        height: 40px;
-        font-size: 16px;
-    }
-    
-    .character-list-name {
-        font-size: 12px;
-    }
-    
     .character-detail-avatar-img {
         width: 200px;
         height: 300px;
-    }
-    
-    .character-detail-name {
-        font-size: 18px;
     }
     
     .location-image {
@@ -669,12 +671,15 @@ body.color-theme .modal {
     }
     
     .stat {
-        padding: 4px 12px;
-        font-size: 9px;
+        font-size: 8px;
     }
     
     .stat span {
-        font-size: 12px;
+        font-size: 10px;
+    }
+    
+    .story-text {
+        font-size: var(--font-size, 13px);
     }
 }
 

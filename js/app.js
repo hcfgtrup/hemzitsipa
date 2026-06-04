@@ -13,6 +13,7 @@ class HemzitsipaGame {
         this.playerName = localStorage.getItem('playerName') || 'ДЕТЕКТИВ';
         this.fontSize = localStorage.getItem('fontSize') || 14;
         this.currentTheme = localStorage.getItem('theme') || 'bw';
+        this.totalTextLength = 50000;
         this.init();
     }
     
@@ -61,6 +62,13 @@ class HemzitsipaGame {
         }
     }
     
+    updatePlayerNameDisplay() {
+        const playerNameSpan = document.getElementById('playerNameSpan');
+        if (playerNameSpan) {
+            playerNameSpan.innerText = this.playerName === 'ДЕТЕКТИВ' ? 'ДЕТЕКТИВ' : this.playerName;
+        }
+    }
+    
     bindEvents() {
         const newGameBtn = document.getElementById('newGameBtn');
         const continueBtn = document.getElementById('continueBtn');
@@ -70,9 +78,8 @@ class HemzitsipaGame {
         const backToMenuFromChars = document.getElementById('backToMenuFromChars');
         const backToMenuFromDetail = document.getElementById('backToMenuFromDetail');
         const menuFromGame = document.getElementById('menuFromGame');
-        const saveGameBtn = document.getElementById('saveGameBtn');
         const resetFromGameBtn = document.getElementById('resetFromGameBtn');
-        const toggleMusicBtn = document.getElementById('toggleMusicBtn');
+        const toggleMusicBtnDropdown = document.getElementById('toggleMusicBtnDropdown');
         
         if (newGameBtn) newGameBtn.onclick = () => this.startNewGame();
         if (continueBtn) continueBtn.onclick = () => this.continueGame();
@@ -82,9 +89,8 @@ class HemzitsipaGame {
         if (backToMenuFromChars) backToMenuFromChars.onclick = () => this.showMainMenu();
         if (backToMenuFromDetail) backToMenuFromDetail.onclick = () => this.showCharactersList();
         if (menuFromGame) menuFromGame.onclick = () => this.backToMenu();
-        if (saveGameBtn) saveGameBtn.onclick = () => this.saveGame();
         if (resetFromGameBtn) resetFromGameBtn.onclick = () => this.resetGame();
-        if (toggleMusicBtn) toggleMusicBtn.onclick = () => this.toggleMusic();
+        if (toggleMusicBtnDropdown) toggleMusicBtnDropdown.onclick = () => this.toggleMusic();
     }
     
     showSettingsModal() {
@@ -192,7 +198,7 @@ class HemzitsipaGame {
         modal.innerHTML = `
             <div class="modal-content">
                 <h3>ВВЕДИТЕ ИМЯ</h3>
-                <input type="text" id="playerNameInput" maxlength="20" placeholder="ИМЯ ПЕРСОНАЖА" value="${this.playerName}">
+                <input type="text" id="playerNameInput" maxlength="20" placeholder="ИМЯ ПЕРСОНАЖА" value="${this.playerName === 'ДЕТЕКТИВ' ? '' : this.playerName}">
                 <button id="confirmNameBtn">ПРИНЯТЬ</button>
                 <button id="closeNameBtn" class="close-modal">ОТМЕНА</button>
             </div>
@@ -210,6 +216,7 @@ class HemzitsipaGame {
                 this.playerName = newName;
                 localStorage.setItem('playerName', newName);
                 this.gameState.playerName = newName;
+                this.updatePlayerNameDisplay();
             }
             modal.remove();
             if (isFromSettings) {
@@ -261,14 +268,16 @@ class HemzitsipaGame {
             }
         }
         SaveService.deleteSave();
-        this.showNameInput();
         this.showGameInterface();
+        this.updatePlayerNameDisplay();
         this.render();
     }
     
     continueGame() {
         if (SaveService.load(this.gameState)) {
             this.unlockedCharacters = this.gameState.unlockedCharacters || [];
+            this.playerName = this.gameState.playerName || localStorage.getItem('playerName') || 'ДЕТЕКТИВ';
+            this.updatePlayerNameDisplay();
             if (this.unlockedCharacters.length === 0) {
                 for (const [id, char] of Object.entries(CharactersData)) {
                     if (char.isUnlockedByDefault) {
@@ -294,13 +303,11 @@ class HemzitsipaGame {
         const charactersListPanel = document.getElementById('charactersListPanel');
         const characterDetailPanel = document.getElementById('characterDetailPanel');
         const gameInterface = document.getElementById('gameInterface');
-        const musicControl = document.getElementById('musicControl');
         
         if (mainMenu) mainMenu.style.display = 'flex';
         if (charactersListPanel) charactersListPanel.style.display = 'none';
         if (characterDetailPanel) characterDetailPanel.style.display = 'none';
         if (gameInterface) gameInterface.style.display = 'none';
-        if (musicControl) musicControl.style.display = 'none';
         
         const modal = document.getElementById('settingsModal');
         if (modal) modal.remove();
@@ -313,13 +320,11 @@ class HemzitsipaGame {
         const charactersListPanel = document.getElementById('charactersListPanel');
         const characterDetailPanel = document.getElementById('characterDetailPanel');
         const gameInterface = document.getElementById('gameInterface');
-        const musicControl = document.getElementById('musicControl');
         
         if (mainMenu) mainMenu.style.display = 'none';
         if (charactersListPanel) charactersListPanel.style.display = 'none';
         if (characterDetailPanel) characterDetailPanel.style.display = 'none';
         if (gameInterface) gameInterface.style.display = 'block';
-        if (musicControl) musicControl.style.display = 'block';
     }
     
     showCharactersList() {
@@ -409,7 +414,7 @@ class HemzitsipaGame {
         container.innerHTML = `
             <div class="character-detail-unlocked">
                 <img src="${characterData.avatar}" class="character-detail-avatar-img" alt="${characterData.name}" onerror="this.style.display='none'; this.nextSibling.style.display='flex'">
-                <div style="display: none; width:300px; height:450px; background:var(--button-bg); border-radius:2px; align-items:center; justify-content:center; font-size:40px; margin-bottom:20px;">?</div>
+                <div style="display: none; width:300px; height:450px; background:var(--button-bg); align-items:center; justify-content:center; font-size:40px; margin-bottom:20px;">?</div>
                 <div class="character-detail-name">${characterData.name}</div>
                 <div class="character-detail-desc">${characterData.fullDesc}</div>
                 <div class="character-detail-fact-title">ФАКТ</div>
@@ -439,11 +444,9 @@ class HemzitsipaGame {
         notification.style.backgroundColor = 'var(--bg-container)';
         notification.style.color = 'var(--text-light)';
         notification.style.padding = '10px 20px';
-        notification.style.borderRadius = '2px';
-        notification.style.fontWeight = 'normal';
-        notification.style.zIndex = '3000';
         notification.style.border = '1px solid var(--border)';
         notification.style.fontFamily = 'Courier New, monospace';
+        notification.style.zIndex = '3000';
         notification.innerText = `РАЗБЛОКИРОВАН: ${characterName}`;
         document.body.appendChild(notification);
         setTimeout(() => notification.remove(), 3000);
@@ -472,6 +475,11 @@ class HemzitsipaGame {
         if (storyDiv) {
             storyDiv.innerHTML = content.text.replace(/\n/g, '<br>');
             storyDiv.scrollTop = 0;
+            
+            const currentLength = storyDiv.innerText.length;
+            const percent = Math.min(100, (currentLength / this.totalTextLength) * 100);
+            const progressBar = document.getElementById('progressBar');
+            if (progressBar) progressBar.style.width = percent + '%';
         }
         
         const choicesDiv = document.getElementById('choicesList');
@@ -554,14 +562,15 @@ class HemzitsipaGame {
             this.music.play().catch(e => console.log('Play error:', e));
             this.musicPlaying = true;
             localStorage.setItem('music_muted', 'false');
-            const toggleBtn = document.getElementById('toggleMusicBtn');
-            if (toggleBtn) toggleBtn.innerText = 'M';
         } else {
             this.music.pause();
             this.musicPlaying = false;
             localStorage.setItem('music_muted', 'true');
-            const toggleBtn = document.getElementById('toggleMusicBtn');
-            if (toggleBtn) toggleBtn.innerText = 'M';
+        }
+        
+        const modalMusicBtn = document.getElementById('modalToggleMusicBtn');
+        if (modalMusicBtn) {
+            modalMusicBtn.innerText = this.music.paused ? 'ВКЛЮЧИТЬ МУЗЫКУ' : 'ВЫКЛЮЧИТЬ МУЗЫКУ';
         }
     }
 }

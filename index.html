@@ -47,27 +47,40 @@
         <!-- ИГРОВОЙ ИНТЕРФЕЙС -->
         <div id="gameInterface" style="display: none;">
             <div class="game-container">
+                <!-- ТРИ ТОЧКИ В ПРАВОМ ВЕРХНЕМ УГЛУ -->
                 <div class="game-header">
-                    <button id="menuFromGame" class="icon-btn">МЕНЮ</button>
-                    <h1>ХЁМЗИЦИПА</h1>
-                    <button id="saveGameBtn" class="icon-btn">СОХР</button>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                    <div class="dropdown">
+                        <button class="dot-menu-btn">⫶</button>
+                        <div class="dropdown-content">
+                            <button id="menuFromGame">Выход в меню</button>
+                            <button id="resetFromGameBtn">Новая игра</button>
+                            <button id="toggleMusicBtnDropdown">Музыка</button>
+                        </div>
+                    </div>
                 </div>
                 
+                <!-- ИМЯ ПЕРСОНАЖА -->
+                <div class="player-name">
+                    ПЕРСОНАЖ: <span id="playerNameSpan">ДЕТЕКТИВ</span>
+                </div>
+                
+                <!-- СТАТЫ -->
                 <div class="stats" id="stats">
                     <div class="stat">ПРОФЕССИОНАЛИЗМ <span id="profValue">0</span></div>
                     <div class="stat">ЛИЧНЫЕ ЧУВСТВА <span id="feelValue">0</span></div>
                     <div class="stat">ДОВЕРИЕ <span id="trustValue">0</span></div>
                 </div>
                 
+                <!-- ТЕКСТ ИСТОРИИ -->
                 <div class="story-text" id="storyText">
                     ЗАГРУЗКА...
                 </div>
                 
+                <!-- КНОПКИ ВЫБОРА -->
                 <div class="choices" id="choicesList"></div>
-                
-                <div class="game-footer">
-                    <button id="resetFromGameBtn" class="reset-btn">НОВАЯ ИГРА</button>
-                </div>
             </div>
         </div>
     </div>
@@ -76,9 +89,6 @@
     <audio id="bgMusic" loop preload="auto">
         <source src="assets/music/ambient.mp3" type="audio/mpeg">
     </audio>
-    <div id="musicControl" class="music-control" style="display: none;">
-        <button id="toggleMusicBtn">M</button>
-    </div>
 
     <script type="module" src="js/app.js"></script>
 </body>
