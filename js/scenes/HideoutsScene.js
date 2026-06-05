@@ -7,6 +7,8 @@ export class HideoutsScene extends Scene {
     }
     
     getText(gameState) {
+        gameState.setFlag('cabinet_searched', true);
+        
         let text = `<img src="assets/locations/cabinet.jpg" class="location-image" alt="Кабинет адвоката">
 
 — Ищите тайники, — сказал я стажёру. — Под столешницей, за книгами, в полу.

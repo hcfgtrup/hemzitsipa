@@ -7,6 +7,32 @@ export class BrotherMeetingScene extends Scene {
     }
     
     getText(gameState) {
+        const murderHappened = gameState.getFlag('murder_scene_completed');
+        const cabinetSearched = gameState.getFlag('cabinet_searched');
+        
+        console.log('=== BROTHER MEETING DEBUG ===');
+        console.log('cabinetSearched:', cabinetSearched);
+        console.log('murderHappened:', murderHappened);
+        console.log('all flags:', gameState.flags);
+
+        if (cabinetSearched) {
+            return {
+                text: `Вы осмотрели кабинет адвоката и нашли важные улики. Пора задерживать подозреваемую.`,
+                choices: [
+                    new Choice('to_arrest', 'Ехать на арест', 'arrest_scene', {})
+                ]
+            };
+        }
+        
+        if (murderHappened) {
+            return {
+                text: `Вы уже побывали на месте убийства и расшифровали послание. Теперь нужно осмотреть кабинет адвоката.`,
+                choices: [
+                    new Choice('to_cabinet', 'Ехать в кабинет адвоката', 'cabinet_search', {})
+                ]
+            };
+        }
+        
         let text = `<img src="assets/locations/cafe.jpg" class="location-image" alt="Кафе">
 
 Я ещё пару секунд смотрел на экран телефона, прежде чем усмехнулся.
@@ -97,6 +123,8 @@ export class BrotherMeetingScene extends Scene {
     
     processChoice(choiceId, gameState, userInput = null) {
         if (choiceId === 'to_murder') return 'murder_scene';
+        if (choiceId === 'to_cabinet') return 'cabinet_search';
+        if (choiceId === 'to_arrest') return 'arrest_scene';
         return 'brother_meeting';
     }
 }

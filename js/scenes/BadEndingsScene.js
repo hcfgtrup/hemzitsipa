@@ -1,7 +1,7 @@
 import { Scene } from './Scene.js';
 import { Choice } from '../models/Choice.js';
 
-// Промолчал в кабинете после истории про сестру (1.1.1.2)
+// 1. Промолчал в кабинете → брат с пистолетом
 export class BadEndingPromolchatScene extends Scene {
     constructor() {
         super('bad_ending_promolchat');
@@ -67,7 +67,7 @@ export class BadEndingPromolchatScene extends Scene {
     }
 }
 
-// Пошёл домой вместо встречи с братом (1.1.2)
+// 2. Пошёл домой → удар в подъезде
 export class BadEndingHomeScene extends Scene {
     constructor() {
         super('bad_ending_home');
@@ -117,7 +117,7 @@ export class BadEndingHomeScene extends Scene {
     }
 }
 
-// Отказ от ужина после "нет идей" (111122)
+// 3. Отказ от ужина после "нет идей" (111122)
 export class BadEndingRefuseScene extends Scene {
     constructor() {
         super('bad_ending_refuse');

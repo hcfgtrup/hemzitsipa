@@ -7,6 +7,16 @@ export class CabinetScene extends Scene {
     }
     
     getText(gameState) {
+
+        if (gameState.getFlag('cabinet_searched')) {
+            return {
+                text: `Вы уже осмотрели кабинет.`,
+                choices: [
+                    new Choice('back_to_brother', 'Вернуться к брату', 'brother_meeting', {})
+                ]
+            };
+        }
+
         let text = `<img src="assets/locations/cabinet.jpg" class="location-image" alt="Кабинет адвоката">
 
 — Не могли бы вы показать нам кабинет мужа? — спросил я, вставая. — Иногда обстановка может подсказать то, что человек не говорит словами.

@@ -118,15 +118,15 @@ export class NoIdeaScene extends Scene {
         return {
             text: text,
             choices: [
-                new Choice('agree_dinner', 'Согласиться', 'dinner_agree_alt', {}),
-                new Choice('decline_dinner', 'Отказаться', 'bad_ending_refuse', {})
+                new Choice('agree_dinner_noidea', 'Согласиться', 'dinner_agree_alt', {}),
+                new Choice('decline_dinner_noidea', 'Отказаться', 'bad_ending_refuse', {})
             ]
         };
     }
     
     processChoice(choiceId, gameState, userInput = null) {
-        if (choiceId === 'agree_dinner') return 'dinner_agree_alt';
-        if (choiceId === 'decline_dinner') return 'bad_ending_refuse';
+        if (choiceId === 'agree_dinner_noidea') return 'dinner_agree_alt';
+        if (choiceId === 'decline_dinner_noidea') return 'bad_ending_refuse';
         return 'no_idea_scene';
     }
 }

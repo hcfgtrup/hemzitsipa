@@ -52,13 +52,13 @@ export class DinnerAgreeAltScene extends Scene {
         return {
             text: text,
             choices: [
-                new Choice('continue_after_alt_dinner', 'Продолжить расследование', 'after_alt_dinner', { personalFeelings: 2 })
+                new Choice('continue_after_alt_dinner', 'Продолжить расследование', 'cipher_scene', { personalFeelings: 2 })
             ]
         };
     }
     
     processChoice(choiceId, gameState, userInput = null) {
-        if (choiceId === 'continue_after_alt_dinner') return 'after_alt_dinner';
+        if (choiceId === 'continue_after_alt_dinner') return 'cipher_scene';
         return 'dinner_agree_alt';
     }
 }

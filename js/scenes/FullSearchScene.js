@@ -7,6 +7,9 @@ export class FullSearchScene extends Scene {
     }
     
     getText(gameState) {
+        gameState.setFlag('full_search_done', true);
+        gameState.setFlag('cabinet_searched', true);
+        
         let text = `<img src="assets/locations/cabinet.jpg" class="location-image" alt="Кабинет адвоката">
 
 Я сел за стол адвоката и начал перебирать бумаги. Стажёр встал рядом, заглядывая через плечо. Женщина молча стояла у двери, наблюдая.
@@ -78,13 +81,13 @@ export class FullSearchScene extends Scene {
         return {
             text: text,
             choices: [
-                new Choice('back_to_office', 'Вернуться в офис', 'brother_call', { professionalism: 2 })
+                new Choice('back_to_brother', 'Вернуться к брату', 'brother_meeting', { professionalism: 2 })
             ]
         };
     }
     
     processChoice(choiceId, gameState, userInput = null) {
-        if (choiceId === 'back_to_office') return 'brother_call';
+        if (choiceId === 'back_to_brother') return 'brother_meeting';
         return 'full_search_scene';
     }
 }
