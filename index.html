@@ -6,19 +6,49 @@
     <title>Хёмзиципа</title>
     <link rel="stylesheet" href="css/style.css">
 
+    <!-- ПОДКЛЮЧЕНИЕ СДК ПЛАТФОРМ -->
+    <!-- Библиотека для Telegram Web Apps -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Библиотека для VK Mini Apps -->
     <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+    
     <script>
-        // Инициализируем ВК моментально, как только скрипт прочитался
-        if (window.location.search.includes('vk_app_id')) {
-        try {
-            vkBridge.send('VKWebAppInit');
-            console.log('VK Init Sent');
-        } catch(e) { console.error(e); }
+        function initializeApp() {
+            const isVK = window.location.search.includes('vk_app_id');
+
+            if (isVK) {
+                console.log('Запущено внутри ВКонтакте. Начинаем интеграцию...');
+                if (typeof vkBridge !== 'undefined') {
+                    vkBridge.send('VKWebAppInit')
+                        .then(() => {
+                            console.log('VK Init Success');
+                            // Помогаем десктопной версии ВК найти корневой элемент
+                            const rootEl = document.getElementById('app') || document.body;
+                            if (rootEl) {
+                                rootEl.setAttribute('getRootRef', 'true');
+                            }
+                        })
+                        .catch(e => console.error('Ошибка инициализации ВК:', e));
+                } else {
+                    // Если библиотека ВК не успела прогрузиться, пробуем снова через 100мс
+                    setTimeout(initializeApp, 100);
+                }
+            } else if (window.Telegram && window.Telegram.WebApp) {
+                console.log('Запущено внутри Telegram.');
+                window.Telegram.WebApp.ready();
+                window.Telegram.WebApp.expand(); // Разворачиваем на весь экран
+            } else {
+                console.log('Запущено в обычном браузере.');
+            }
         }
+
+        // Запускаем проверку сразу при готовности DOM дерева
+        document.addEventListener('DOMContentLoaded', initializeApp);
     </script>
 
 </head>
-<body>
+<!-- Добавили id="root" для совместимости с десктопным ВК -->
+<body id="root">
     <div id="app">
         <!-- ГЛАВНОЕ МЕНЮ -->
         <div id="mainMenu" class="game-container main-menu">
