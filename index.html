@@ -5,6 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Хёмзиципа</title>
     <link rel="stylesheet" href="css/style.css">
+
+    <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+    <script>
+        // Инициализируем ВК моментально, как только скрипт прочитался
+        if (window.location.search.includes('vk_app_id')) {
+        try {
+            vkBridge.send('VKWebAppInit');
+            console.log('VK Init Sent');
+        } catch(e) { console.error(e); }
+        }
+    </script>
+
 </head>
 <body>
     <div id="app">
@@ -91,5 +103,6 @@
     </audio>
 
     <script type="module" src="js/app.js"></script>
+    
 </body>
 </html>

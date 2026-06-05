@@ -1,0 +1,4 @@
+/*
+  X-Frame-Options: ALLOWALL
+  Content-Security-Policy: frame-ancestors 'self' http://*.telegram.org https://*.telegram.org https://*.hosts.apps.tapps.im https://web.telegram.org;
+  Access-Control-Allow-Origin: *

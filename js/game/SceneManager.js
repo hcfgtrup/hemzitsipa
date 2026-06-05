@@ -1,5 +1,6 @@
 import { Scene } from '../scenes/Scene.js';
 import { StartScene } from '../scenes/StartScene.js';
+import { WelcomeScene } from '../scenes/WelcomeScene.js';
 import { OfficeScene } from '../scenes/OfficeScene.js';
 import { OfficeGatherScene } from '../scenes/OfficeGatherScene.js';
 import { OfficeQuestionScene } from '../scenes/OfficeQuestionScene.js';
@@ -27,13 +28,13 @@ import { NoIdeaScene } from '../scenes/NoIdeaScene.js';
 import { CipherScene } from '../scenes/CipherScene.js';
 import { DinnerAgreeScene, DinnerDeclineScene } from '../scenes/DinnerScene.js';
 import { DinnerAgreeAltScene } from '../scenes/DinnerAgreeAltScene.js';
-import { DinnerDeclineAltScene } from '../scenes/DinnerDeclineAltScene.js';
 import { ShareWithInternScene } from '../scenes/ShareWithInternScene.js';
 import { SurveillanceScene } from '../scenes/SurveillanceScene.js';
 import { RaidScene } from '../scenes/RaidScene.js';
 import { ArrestScene } from '../scenes/ArrestScene.js';
 import { DealAcceptEndScene, DealRefuseScene } from '../scenes/DealEndings.js';
 import { BadEndingPromolchatScene, BadEndingHomeScene, BadEndingRefuseScene } from '../scenes/BadEndingsScene.js';
+import { ClockPuzzleScene } from '../scenes/ClockPuzzleScene.js';
 
 export class SceneManager {
     constructor() {
@@ -43,6 +44,7 @@ export class SceneManager {
     
     registerScenes() {
         this.register(new StartScene());
+        this.register(new WelcomeScene());
         this.register(new OfficeScene());
         this.register(new OfficeGatherScene());
         this.register(new OfficeQuestionScene());
@@ -71,7 +73,6 @@ export class SceneManager {
         this.register(new DinnerAgreeScene());
         this.register(new DinnerDeclineScene());
         this.register(new DinnerAgreeAltScene());
-        this.register(new DinnerDeclineAltScene());
         this.register(new ShareWithInternScene());
         this.register(new SurveillanceScene());
         this.register(new RaidScene());
@@ -81,6 +82,7 @@ export class SceneManager {
         this.register(new BadEndingPromolchatScene());
         this.register(new BadEndingHomeScene());
         this.register(new BadEndingRefuseScene());
+        this.register(new ClockPuzzleScene());
     }
     
     register(scene) {

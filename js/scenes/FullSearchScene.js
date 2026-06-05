@@ -7,10 +7,10 @@ export class FullSearchScene extends Scene {
     }
     
     getText(gameState) {
-        gameState.setFlag('full_search_done', true);
-        gameState.setFlag('cabinet_searched', true);
-        
-        let text = `<img src="assets/locations/cabinet.jpg" class="location-image" alt="Кабинет адвоката">
+        if (gameState.getFlag('paper_puzzle_solved')) {
+            gameState.setFlag('cabinet_papers_checked', true);
+            
+            let text = `<img src="assets/locations/cabinet.jpg" class="location-image" alt="Кабинет адвоката">
 
 Я сел за стол адвоката и начал перебирать бумаги. Стажёр встал рядом, заглядывая через плечо. Женщина молча стояла у двери, наблюдая.
 
@@ -78,16 +78,83 @@ export class FullSearchScene extends Scene {
 
 Мы поехали в офис. Всю дорогу я молчал. Думал. И в голову лезли только вопросы: почему брат в списке? Почему десятый? И что я забыл двенадцать лет назад?`;
 
+            return {
+                text: text,
+                choices: [
+                    new Choice('back_to_cabinet', 'Вернуться к осмотру кабинета', 'cabinet_search', {})
+                ]
+            };
+        }
+        
+        const wrongAttempts = gameState.getFlag('paper_wrong_attempts') || [];
+        
+        let text = `<img src="assets/locations/cabinet.jpg" class="location-image" alt="Кабинет адвоката">
+
+Я сел за стол адвоката и начал перебирать бумаги. Стажёр встал рядом, заглядывая через плечо. Женщина молча стояла у двери, наблюдая.
+
+Ничего особенного. Судебные запросы, старые дела, распечатки законов, личные бумаги и записи. В глаза бросилось только три листа.
+
+---
+
+**ГОЛОВОЛОМКА: ТАЙНА ТРЁХ ЛИСТОВ**
+
+Какой из листов, вероятнее всего, связан с убийством?`;
+
+        const choices = [];
+        
+        if (!wrongAttempts.includes('1')) {
+            choices.push(new Choice('paper_wrong1', '1. Вырванная из журнала статья о личной жизни местной знаменитости', 'full_search_scene', {}));
+        }
+        
+        choices.push(new Choice('paper_correct', '2. Судебная повестка', 'full_search_scene', {}));
+        
+        if (!wrongAttempts.includes('3')) {
+            choices.push(new Choice('paper_wrong2', '3. Выписка из больницы 5-летней давности', 'full_search_scene', {}));
+        }
+        
+        if (wrongAttempts.includes('1') && wrongAttempts.includes('3')) {
+            text += `\n\n*Остался только один вариант...*`;
+        }
+        
         return {
             text: text,
-            choices: [
-                new Choice('back_to_brother', 'Вернуться к брату', 'brother_meeting', { professionalism: 2 })
-            ]
+            choices: choices
         };
     }
     
     processChoice(choiceId, gameState, userInput = null) {
-        if (choiceId === 'back_to_brother') return 'brother_meeting';
+        const wrongAttempts = gameState.getFlag('paper_wrong_attempts') || [];
+        
+        if (choiceId === 'paper_correct') {
+            gameState.setFlag('paper_puzzle_solved', true);
+            gameState.setFlag('cabinet_papers_checked', true);
+            if (wrongAttempts.length === 0) {
+                gameState.updateStats({ professionalism: 2 });
+            }
+            return 'full_search_scene';
+        }
+        
+        if (choiceId === 'paper_wrong1') {
+            if (!wrongAttempts.includes('1')) {
+                wrongAttempts.push('1');
+                gameState.setFlag('paper_wrong_attempts', wrongAttempts);
+                gameState.setFlag('last_puzzle_wrong_message', '❌ НЕВЕРНО! Этот лист — обычная жёлтая пресса, не имеющая отношения к делу. Профессионализм понижен.');
+                gameState.updateStats({ professionalism: -1 });
+            }
+            return 'full_search_scene';
+        }
+        
+        if (choiceId === 'paper_wrong2') {
+            if (!wrongAttempts.includes('3')) {
+                wrongAttempts.push('3');
+                gameState.setFlag('paper_wrong_attempts', wrongAttempts);
+                gameState.setFlag('last_puzzle_wrong_message', '❌ НЕВЕРНО! Старая выписка из больницы, возможно, не относится к текущему делу. Профессионализм понижен.');
+                gameState.updateStats({ professionalism: -1 });
+            }
+            return 'full_search_scene';
+        }
+        
+        if (choiceId === 'back_to_cabinet') return 'cabinet_search';
         return 'full_search_scene';
     }
 }

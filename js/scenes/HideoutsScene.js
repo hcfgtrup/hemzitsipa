@@ -7,9 +7,10 @@ export class HideoutsScene extends Scene {
     }
     
     getText(gameState) {
-        gameState.setFlag('cabinet_searched', true);
-        
-        let text = `<img src="assets/locations/cabinet.jpg" class="location-image" alt="Кабинет адвоката">
+        if (gameState.getFlag('hideouts_found')) {
+            gameState.setFlag('cabinet_hideouts_checked', true);
+            
+            let text = `<img src="assets/locations/cabinet.jpg" class="location-image" alt="Кабинет адвоката">
 
 — Ищите тайники, — сказал я стажёру. — Под столешницей, за книгами, в полу.
 
@@ -149,16 +150,44 @@ export class HideoutsScene extends Scene {
 
 И что следующая жертва — либо я, либо кто-то, кого я люблю.`;
 
+            return {
+                text: text,
+                choices: [
+                    new Choice('back_to_cabinet', 'Вернуться к осмотру кабинета', 'cabinet_search', {})
+                ]
+            };
+        }
+        
+        let text = `<img src="assets/locations/cabinet.jpg" class="location-image" alt="Кабинет адвоката">
+
+— Ищите тайники, — сказал я стажёру. — Под столешницей, за книгами, в полу.
+
+Мы принялись за обыск. Женщина сначала пыталась помогать, но быстро устала и села в кресло.
+
+— Сэр, — позвал стажёр через десять минут. — Здесь.
+
+Я подошёл. Он указывал на плинтус в углу комнаты. Одна секция отходила от стены — будто её недавно отдирали и приставили обратно.
+
+Я нажал на плинтус. Он отошёл. За ним — небольшая ниша. В нише — металлическая коробка.
+
+Я достал её. Коробка оказалась не заперта. Внутри — несколько фотографий, старый диктофон и сложенный в несколько раз лист бумаги.
+
+Это важная улика.`;
+
         return {
             text: text,
             choices: [
-                new Choice('to_brother', 'Вернуться к брату', 'brother_call', { professionalism: 2, personalFeelings: 2 })
+                new Choice('back_to_cabinet', 'Вернуться к осмотру кабинета', 'cabinet_search', {})
             ]
         };
     }
     
     processChoice(choiceId, gameState, userInput = null) {
-        if (choiceId === 'to_brother') return 'brother_call';
+        if (choiceId === 'back_to_cabinet') {
+            gameState.setFlag('hideouts_found', true);
+            gameState.setFlag('cabinet_hideouts_checked', true);
+            return 'cabinet_search';
+        }
         return 'hideouts_scene';
     }
 }

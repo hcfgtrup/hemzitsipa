@@ -172,8 +172,8 @@ export class ArrestScene extends Scene {
         return {
             text: text,
             choices: [
-                new Choice('accept_deal', 'Согласиться на сделку', 'deal_accept_end', { professionalism: -5, personalFeelings: 3 }),
-                new Choice('refuse_deal', 'Отказаться от сделки', 'deal_refuse_scene', { professionalism: 3 })
+                new Choice('accept_deal', 'Согласиться на сделку', 'deal_accept_end', { professionalism: -2, personalFeelings: 3 }),
+                new Choice('refuse_deal', 'Отказаться от сделки', 'deal_refuse_scene', { professionalism: 2 })
             ]
         };
     }

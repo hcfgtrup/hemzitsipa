@@ -11,9 +11,7 @@ export class SurveillanceScene extends Scene {
 
 — Мы уходим, — сказал я, забирая коробку с фотографиями. — Но вы остаётесь здесь. Не вздумайте ничего трогать.
 
-— Я не...
-
-— Если вы невиновны, — перебил я, — вы ничего не боитесь. Если нет — мы вернёмсь с ордером и обыщем всё до последнего шкафа.
+— Если вы невиновны — вы ничего не боитесь. Если нет — мы вернёмся с ордером и обыщем всё до последнего шкафа.
 
 Женщина опустила голову.
 
@@ -146,7 +144,7 @@ export class SurveillanceScene extends Scene {
         return {
             text: text,
             choices: [
-                new Choice('after_surveillance', 'Брат звонит', 'brother_call', { professionalism: 1 })
+                new Choice('after_surveillance', 'Брат звонит', 'brother_call', { professionalism: 1, internTrust: 1 })
             ]
         };
     }

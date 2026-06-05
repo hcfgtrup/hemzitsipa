@@ -46,15 +46,17 @@ export class WifeDetailsScene extends Scene {
         return {
             text: text,
             choices: [
-                new Choice('check_safe_first', 'Осмотреть сейф в первую очередь', 'safe_scene', {}),
-                new Choice('search_full', 'Осмотреть весь кабинет — не торопиться, искать всё, что кажется странным', 'full_search_scene', { professionalism: 1 })
+                new Choice('check_safe_first', '🔐 Осмотреть сейф в первую очередь', 'safe_scene', {}),
+                new Choice('search_papers', '📄 Осмотреть бумаги на столе', 'full_search_scene', { professionalism: 1 }),
+                new Choice('find_hideouts', '🔍 Искать тайники', 'hideouts_scene', { professionalism: 1 })
             ]
         };
     }
     
     processChoice(choiceId, gameState, userInput = null) {
         if (choiceId === 'check_safe_first') return 'safe_scene';
-        if (choiceId === 'search_full') return 'full_search_scene';
+        if (choiceId === 'search_papers') return 'full_search_scene';
+        if (choiceId === 'find_hideouts') return 'hideouts_scene';
         return 'wife_details';
     }
 }

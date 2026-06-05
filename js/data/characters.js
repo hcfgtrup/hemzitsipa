@@ -66,7 +66,7 @@ export const CharactersData = {
         shortDesc: 'Жена пропавшего',
         fullDesc: 'Женщина лет сорока. Выразительные черты лица, аккуратная осанка. Привыкла держать себя уверенно. Раньше работала психологом.',
         fact: 'Последняя, кто видел мужа живым.',
-        unlockScene: 'wife_interview',
+        unlockScene: 'wife_quick',
         isUnlockedByDefault: false
     }
 };

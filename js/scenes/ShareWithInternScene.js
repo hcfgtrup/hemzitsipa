@@ -42,7 +42,7 @@ export class ShareWithInternScene extends Scene {
         return {
             text: text,
             choices: [
-                new Choice('continue_investigation', 'Продолжить расследование', 'cipher_scene', { professionalism: 1, personalFeelings: 1 })
+                new Choice('continue_investigation', 'Продолжить расследование', 'cipher_scene', { professionalism: 1, personalFeelings: 1, internTrust: 1 })
             ]
         };
     }

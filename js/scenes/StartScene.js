@@ -7,8 +7,6 @@ export class StartScene extends Scene {
     }
     
     getText(gameState) {
-        const playerName = gameState.playerName || '_______';
-        
         let text = `<img src="assets/locations/office.jpg" class="location-image" alt="Кабинет детектива">
 
 День выдался солнечный. Ленивый свет пробивался сквозь жалюзи, полосами ложась на стол, заваленный папками.
@@ -23,26 +21,26 @@ export class StartScene extends Scene {
 
 Я наконец поднял глаза. Парень выглядел так, будто только вчера вышел из университета: неуверенный, но с искоркой любопытства. Он протянул папку обеими руками.
 
-— Я же просил обращаться ко мне как "${playerName}", — сказали вы.
+— Я же просил обращаться ко мне как "Шеф", — сказали вы.
 
-Введите ваше имя (оно будет использоваться в игре):`;
+— Простите, шеф. Дело №294 — розыск без вести пропавшего. Пропал адвокат Михаил Белозёров. Данных очень мало. Ушёл на работу, но до места не дошёл.
+
+— Может, сходим к его жене? Она ведь последняя его видела, — предложил стажёр.`;
 
         return {
             text: text,
             choices: [
-                new Choice('set_name', 'Ввести имя', 'start', {}, true, 'Введите ваше имя')
+                new Choice('collect_data', 'Это само собой, но для начала я бы собрал данные о нём', 'office_gather', { professionalism: 1 }),
+                new Choice('ask_wife', 'Уверен? Ладно, поехали', 'wife_quick', {}),
+                new Choice('coffee_first', 'Сделаем, но чуть позже, а пока принеси мне кофе', 'office_coffee', {})
             ]
         };
     }
     
     processChoice(choiceId, gameState, userInput = null) {
-        if (choiceId === 'set_name') {
-            if (userInput && userInput.trim()) {
-                gameState.playerName = userInput.trim().toUpperCase();
-                localStorage.setItem('playerName', gameState.playerName);
-            }
-            return 'office';
-        }
+        if (choiceId === 'collect_data') return 'office_gather';
+        if (choiceId === 'ask_wife') return 'wife_quick';
+        if (choiceId === 'coffee_first') return 'office_coffee';
         return 'start';
     }
 }

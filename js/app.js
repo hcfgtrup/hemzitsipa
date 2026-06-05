@@ -69,6 +69,74 @@ class HemzitsipaGame {
         }
     }
     
+    formatText(text) {
+        return text
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\n/g, '<br>');
+    }
+    
+    showGameOverModal() {
+        let title = '';
+        let message = '';
+        
+        switch (this.gameState.gameOverReason) {
+            case 'professionalism':
+                title = 'ПРОФЕССИОНАЛИЗМ УТЕРЯН';
+                message = 'Ваши профессиональные навыки и так вызывали вопросы у руководства. После серии ошибок и провалов в расследовании вы были уволены. Вам запрещено работать в этой сфере, за вами установлено наблюдение.';
+                break;
+            case 'feelings':
+                title = 'ЛИЧНЫЕ ЧУВСТВА ИСЧЕРПАНЫ';
+                message = 'Вы перестали чувствовать. Эмоции больше не управляют вами — ни сострадание, ни гнев, ни страх. Вы стали машиной, но бездушный детектив не способен понять преступника. Расследование зашло в тупик.';
+                break;
+            case 'trust':
+                title = 'ДОВЕРИЕ ПОТЕРЯНО';
+                message = 'Люди больше не верят вам. Стажёр подал рапорт о переводе, информаторы отказываются говорить, коллеги сторонятся вас. Без доверия вы не можете получать новую информацию и продвигаться в деле.';
+                break;
+            default:
+                title = 'ИГРА ОКОНЧЕНА';
+                message = 'Вы проиграли. Попробуйте начать заново и принимайте более взвешенные решения.';
+        }
+        
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <h3>${title}</h3>
+                <p style="margin: 20px 0; line-height: 1.6; text-align: left;">${message}</p>
+                <button id="gameOverMenuBtn">В МЕНЮ</button>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        const menuBtn = document.getElementById('gameOverMenuBtn');
+        menuBtn.onclick = () => {
+            modal.remove();
+            this.resetGame();
+            this.showMainMenu();
+        };
+    }
+    
+    showPuzzleWrongModal(message) {
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <h3>НЕВЕРНЫЙ ОТВЕТ</h3>
+                <p style="margin: 20px 0; line-height: 1.6; text-align: left;">${message}</p>
+                <button id="puzzleWrongCloseBtn">ПРОДОЛЖИТЬ</button>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        const closeBtn = document.getElementById('puzzleWrongCloseBtn');
+        closeBtn.onclick = () => {
+            modal.remove();
+            this.render();
+        };
+    }
+    
     bindEvents() {
         const newGameBtn = document.getElementById('newGameBtn');
         const continueBtn = document.getElementById('continueBtn');
@@ -260,7 +328,6 @@ class HemzitsipaGame {
     
     startNewGame() {
         this.gameState = new GameState();
-        this.gameState.playerName = this.playerName;
         this.unlockedCharacters = [];
         for (const [id, char] of Object.entries(CharactersData)) {
             if (char.isUnlockedByDefault) {
@@ -268,9 +335,49 @@ class HemzitsipaGame {
             }
         }
         SaveService.deleteSave();
-        this.showGameInterface();
-        this.updatePlayerNameDisplay();
-        this.render();
+        this.showNameInputForNewGame();
+    }
+    
+    showNameInputForNewGame() {
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <h3>ВВЕДИТЕ ИМЯ ДЕТЕКТИВА</h3>
+                <input type="text" id="playerNameInput" maxlength="20" placeholder="ИМЯ ПЕРСОНАЖА" autocomplete="off">
+                <button id="confirmNameBtn">ПРИНЯТЬ</button>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        const input = document.getElementById('playerNameInput');
+        const confirmBtn = document.getElementById('confirmNameBtn');
+        
+        input.focus();
+        
+        confirmBtn.onclick = () => {
+            const newName = input.value.trim().toUpperCase();
+            if (newName) {
+                this.playerName = newName;
+                localStorage.setItem('playerName', newName);
+                this.gameState.playerName = newName;
+                this.updatePlayerNameDisplay();
+            } else {
+                this.playerName = 'ДЕТЕКТИВ';
+                this.gameState.playerName = 'ДЕТЕКТИВ';
+            }
+            modal.remove();
+            this.showGameInterface();
+            this.gameState.currentScene = 'welcome';
+            this.render();
+        };
+        
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                confirmBtn.click();
+            }
+        });
     }
     
     continueGame() {
@@ -453,6 +560,20 @@ class HemzitsipaGame {
     }
     
     render() {
+        // Если Game Over уже есть — показываем
+        if (this.gameState.gameOver) {
+            this.showGameOverModal();
+            return;
+        }
+        
+        // Проверка на сообщение об ошибке в головоломке
+        const wrongMessage = this.gameState.getFlag('last_puzzle_wrong_message');
+        if (wrongMessage) {
+            this.gameState.setFlag('last_puzzle_wrong_message', null);
+            this.showPuzzleWrongModal(wrongMessage);
+            return;
+        }
+        
         const currentScene = this.sceneManager.getScene(this.gameState.currentScene);
         if (!currentScene) {
             this.resetGame();
@@ -473,7 +594,7 @@ class HemzitsipaGame {
         
         const storyDiv = document.getElementById('storyText');
         if (storyDiv) {
-            storyDiv.innerHTML = content.text.replace(/\n/g, '<br>');
+            storyDiv.innerHTML = this.formatText(content.text);
             storyDiv.scrollTop = 0;
             
             const currentLength = storyDiv.innerText.length;
@@ -518,13 +639,31 @@ class HemzitsipaGame {
         const content = currentSceneObj.getText(this.gameState);
         const choice = content.choices.find(c => c.id === choiceId);
         
-        if (choice && choice.consequences) {
-            this.gameState.updateStats(choice.consequences);
-        }
-        
         const nextSceneId = this.sceneManager.processChoice(
             this.gameState.currentScene, choiceId, this.gameState, userInput
         );
+        
+        // Список плохих концовок (имеют приоритет над Game Over)
+        const badEndings = ['bad_ending_promolchat', 'bad_ending_home', 'bad_ending_refuse'];
+        const isBadEnding = badEndings.includes(nextSceneId);
+        
+        // Применяем изменения статов
+        if (choice && choice.consequences) {
+            if (isBadEnding) {
+                // Для плохих концовок применяем изменения без проверки Game Over
+                if (choice.consequences.professionalism !== undefined) this.gameState.professionalism += choice.consequences.professionalism;
+                if (choice.consequences.personalFeelings !== undefined) this.gameState.personalFeelings += choice.consequences.personalFeelings;
+                if (choice.consequences.internTrust !== undefined) this.gameState.internTrust += choice.consequences.internTrust;
+                // Не вызываем updateStats, чтобы не затереть gameOver флаг
+            } else {
+                // Для обычных выборов проверяем Game Over
+                const success = this.gameState.updateStats(choice.consequences);
+                if (!success) {
+                    this.render();
+                    return;
+                }
+            }
+        }
         
         if (nextSceneId === 'reset') {
             this.resetGame();
@@ -538,17 +677,15 @@ class HemzitsipaGame {
     }
     
     resetGame() {
-        if (confirm('НАЧАТЬ ИГРУ ЗАНОВО? ВЕСЬ ПРОГРЕСС БУДЕТ ПОТЕРЯН.')) {
-            this.gameState = new GameState();
-            this.unlockedCharacters = [];
-            for (const [id, char] of Object.entries(CharactersData)) {
-                if (char.isUnlockedByDefault) {
-                    this.unlockedCharacters.push(id);
-                }
+        this.gameState = new GameState();
+        this.unlockedCharacters = [];
+        for (const [id, char] of Object.entries(CharactersData)) {
+            if (char.isUnlockedByDefault) {
+                this.unlockedCharacters.push(id);
             }
-            SaveService.deleteSave();
-            this.showMainMenu();
         }
+        SaveService.deleteSave();
+        this.showMainMenu();
     }
     
     saveGame() {
@@ -570,7 +707,7 @@ class HemzitsipaGame {
         
         const modalMusicBtn = document.getElementById('modalToggleMusicBtn');
         if (modalMusicBtn) {
-            modalMusicBtn.innerText = this.music.paused ? 'ВКЛЮЧИТЬ МУЗЫКУ' : 'ВЫКЛЮЧИТЬ МУЗЫКУ';
+            modalMusicBtn.innerText = this.music.paused ? 'ВКЛЮЧИТЬ МУЗЫKУ' : 'ВЫКЛЮЧИТЬ МУЗЫКУ';
         }
     }
 }
